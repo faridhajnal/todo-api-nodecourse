@@ -109,6 +109,29 @@ app.post('/todos', function(request,response){ //body parser npm needed
     
 });
 
+app.delete('/todos/:id', function(request,response){
+    
+    var todoId = parseInt(request.params.id, 10);
+    //var tododes = request.params.status;
+    //var matchedTodo = _.findWhere(todos, {description:tododes});
+    var matchedTodo = _.findWhere(todos, {id:todoId});
+    if(!matchedTodo){
+        response.status(404).json({"error":"no todo matches the id"});
+        
+        
+    }
+     
+   else {
+       
+       todos = _.without(todos, matchedTodo); //first param array to remove from, second element to remove
+       response.json(matchedTodo);
+       
+   }
+    
+    
+    
+})
+
 app.listen(PORT, function(){ //callback function
     
     console.log('Express listening on port: ' + PORT);
