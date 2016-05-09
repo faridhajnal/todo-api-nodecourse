@@ -1,8 +1,12 @@
 var express = require('express'); //express npm module
+var bodyparser = require('body-parser');
 var app = express(); //start express
 var PORT = process.env.PORT || 3000; //environment variable from heroku
 
-var todos = [
+var todos = [];
+var todoNextId = 1;
+/* HARDCODED:
+    [
     
     //todo collection (alle) todo model (eins)
     
@@ -26,6 +30,9 @@ var todos = [
     
      
 ];
+*/
+
+app.use(bodyparser.json());
 
 app.get('/', function(req,res){
     
@@ -63,6 +70,24 @@ app.get('/todos/:id', function(request,response){
        response.status(404).send();
    }
     
+    
+});
+
+app.post('/todos', function(request,response){ //body parser npm needed
+    
+    var body = request.body;
+    console.log('description: ' + body.description);
+    /*todos.push({
+        
+        id : todoNextId,
+        description : body.description,
+        completed : body.completed
+        
+    });*/
+    body.id = todoNextId;
+    todos.push(body);
+    todoNextId += 1;
+    response.json(body); //send the same data back
     
 });
 
