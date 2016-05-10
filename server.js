@@ -45,11 +45,14 @@ app.get('/', function(req,res){
     
 });
 
+///GET ALLE
 app.get('/todos', function(request,response){
     
    response.json(todos); 
     
 });
+
+//GET BY ID
 
 app.get('/todos/:id', function(request,response){
     
@@ -81,6 +84,8 @@ app.get('/todos/:id', function(request,response){
     
 });
 
+//POST
+
 app.post('/todos', function(request,response){ //body parser npm needed
     
     var body = _.pick(request.body, 'description', 'completed'); //pick from body only description and completed keys
@@ -109,12 +114,14 @@ app.post('/todos', function(request,response){ //body parser npm needed
     
 });
 
+//DELETE
+
 app.delete('/todos/:id', function(request,response){
     
     var todoId = parseInt(request.params.id, 10);
     //var tododes = request.params.status;
     //var matchedTodo = _.findWhere(todos, {description:tododes});
-    var matchedTodo = _.findWhere(todos, {id:todoId});
+    var matchedTodo = _.findWhere(todos, {id:todoId}); 
     if(!matchedTodo){
         response.status(404).json({"error":"no todo matches the id"});
         
@@ -130,7 +137,62 @@ app.delete('/todos/:id', function(request,response){
     
     
     
-})
+});
+
+
+//UPDATE ((PUT))
+
+app.put('/todos/:id', function(request,response){ 
+    var todoId = parseInt(request.params.id, 10);
+    var matchedTodo = _.findWhere(todos, {id:todoId}); 
+    
+    if(!matchedTodo) return response.status(404).send('id is not valid');
+    
+    var body = _.pick(request.body, 'description', 'completed');//only valid fields for json
+    var validAttributes = {}; //empty json object
+   
+    
+    if(body.hasOwnProperty('completed') && _.isBoolean(body.completed)){
+        
+        validAttributes.completed = body.completed;
+        
+    } //boolean method has own property and corresponds to type
+    
+    else if(body.hasOwnProperty('completed')){ //is not boolean (implicit)
+        
+        return response.status(400).send('value completed must be boolean');
+        
+    }
+    
+    //else, nothing will happen, no problem...
+    
+    if(body.hasOwnProperty('description') && _.isString(body.description) && body.description.trim().length>0){
+        
+        validAttributes.description = body.description;
+        
+    } //boolean method has own property and corresponds to type
+    
+    else if(body.hasOwnProperty('description')){ //is not boolean (implicit)
+        
+        return response.status(400).send('value for description is not string');
+        
+    }
+   
+    
+    //same for this on the else 
+    
+    
+    //now we can update
+    
+    _.extend(matchedTodo, validAttributes); //this method overrides the exisiting properties and modifies the one needed, it then returns an object
+    response.json(matchedTodo);                                                    //first argument is 'original' object and second is the one with the overrides ((id remains equal))
+    //matchedTodo was modified on the extend method, without need of assigning explicitly to update in code. ((using as void))                                                    
+
+
+});
+    
+    
+    
 
 app.listen(PORT, function(){ //callback function
     
