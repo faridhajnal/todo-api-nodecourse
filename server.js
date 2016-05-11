@@ -48,7 +48,25 @@ app.get('/', function(req,res){
 ///GET ALLE
 app.get('/todos', function(request,response){
     
-   response.json(todos); 
+    
+   var queryParams = request.query; //given automatic
+   var filteredTodos = todos;
+   // so if no query params are matched, same result would be returnes (all)
+   if(queryParams.hasOwnProperty('completed') && queryParams.completed == 'true'){
+       
+       filteredTodos = _.where(filteredTodos, {completed:true}); //multiple results
+       
+   }
+   
+   else if(queryParams.hasOwnProperty('completed') && queryParams.completed == 'false'){
+       
+       filteredTodos = _.where(filteredTodos, {completed:false}); //multiple results
+       
+   }
+   
+   //now we can call : /todos?completed=true or /todos?completed=false :DD
+    
+   response.json(filteredTodos); 
     
 });
 
