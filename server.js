@@ -64,6 +64,18 @@ app.get('/todos', function(request,response){
        
    }
    
+   
+   if(queryParams.hasOwnProperty('q') && queryParams.q.length > 0){
+       //filter: Looks through each value in the list, returning an array of all the values that pass a truth test (predicate).
+       filteredTodos = _.filter(filteredTodos, function(todo){ //array, individual item
+           
+            return todo.description.toLowerCase().indexOf(queryParams.q.toLowerCase()) > -1; //if string q is not on string , returns -1
+            //if true, add to result array and return it 
+       });
+       
+       
+   }
+   
    //now we can call : /todos?completed=true or /todos?completed=false :DD
     
    response.json(filteredTodos); 
