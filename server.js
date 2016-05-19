@@ -90,7 +90,21 @@ app.get('/todos/:id', function(request,response){
     
     console.log('Asking for todo with id: ' + todoId); //params is short for url paramteres
 
-    var matchedTodo = _.findWhere(todos, {id:todoId});//find where => 1 result (linq)
+    db.todo.findById(todoId).then(function(todoItem){
+          if(!!todoItem) 
+          response.json(todoItem.toJSON());
+          else response.status(404).send('id '+ request.params.id + ' not found');
+
+    },
+
+    function(error){
+        response.status(500).send(); //error on server (generic)
+    }
+
+    );
+
+
+    //var matchedTodo = _.findWhere(todos, {id:todoId});//find where => 1 result (linq)
     /*todos.forEach(function(element) {
         
         if(element.id==todoId){ // === checks Type!
@@ -108,8 +122,8 @@ app.get('/todos/:id', function(request,response){
    }
    
    */
-   if(matchedTodo) response.json(matchedTodo);
-   else response.status(404).send();
+   //if(matchedTodo) response.json(matchedTodo);
+   //else response.status(404).send();
     
     
 });
@@ -137,6 +151,8 @@ app.post('/todos', function(request,response){ //body parser npm needed
     
     // body.description = body.description.trim(); //discard additional spaces(beginning , end)
     
+
+    //IMPLEMENTATION USING ARRAYS (LOCAL//STATIC)
     
     // console.log('description: ' + body.description);
     // /*todos.push({
