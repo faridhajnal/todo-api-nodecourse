@@ -1,7 +1,7 @@
 var express = require('express'); // npm modules
 var bodyparser = require('body-parser');
 var _ = require('underscore'); //similar to linq on C#
-var db = require('./db.js');
+
 
 
 var app = express(); //start express
@@ -120,36 +120,27 @@ app.post('/todos', function(request,response){ //body parser npm needed
     
     var body = _.pick(request.body, 'description', 'completed'); //pick from body only description and completed keys
     
-    db.todo.create(body).then(function(todoItem){
-        response.json(todoItem.toJSON());
-    }, function(errorObject){
-
-       response.status(400).json(errorObject);//send back the error.
-
-    });
-
-
-    // if(!_.isBoolean(body.completed) || !_.isString(body.description) || body.description.trim().length === 0){
+    if(!_.isBoolean(body.completed) || !_.isString(body.description) || body.description.trim().length === 0){
         
-    //     return response.status(400).send('Format Problem, check'); //request cannot be completed
+        return response.status(400).send('Format Problem, check'); //request cannot be completed
         
-    // }
+    }
     
-    // body.description = body.description.trim(); //discard additional spaces(beginning , end)
+    body.description = body.description.trim(); //discard additional spaces(beginning , end)
     
     
-    // console.log('description: ' + body.description);
-    // /*todos.push({
+    console.log('description: ' + body.description);
+    /*todos.push({
         
-    //     id : todoNextId,
-    //     description : body.description,
-    //     completed : body.completed
+        id : todoNextId,
+        description : body.description,
+        completed : body.completed
         
-    // });*/
-    // body.id = todoNextId;
-    // todos.push(body);
-    // todoNextId += 1;
-    // response.json(body); //send the same data back
+    });*/
+    body.id = todoNextId;
+    todos.push(body);
+    todoNextId += 1;
+    response.json(body); //send the same data back
     
 });
 
@@ -231,15 +222,10 @@ app.put('/todos/:id', function(request,response){
 });
     
     
+    
 
-db.sequelize.sync().then(function(){
-
-    app.listen(PORT, function(){ //callback function
-        
-        console.log('Express listening on port: ' + PORT);
-        
-    });
-
-
+app.listen(PORT, function(){ //callback function
+    
+    console.log('Express listening on port: ' + PORT);
+    
 });
-
