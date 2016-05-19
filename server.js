@@ -49,36 +49,28 @@ app.get('/', function(req,res){
 app.get('/todos', function(request,response){
     
     
-   var queryParams = request.query; //given automatic
-   var filteredTodos = todos;
-   // so if no query params are matched, same result would be returnes (all)
-   if(queryParams.hasOwnProperty('completed') && queryParams.completed == 'true'){
-       
-       filteredTodos = _.where(filteredTodos, {completed:true}); //multiple results
-       
+   var query = request.query; //given automatic
+   var where = {};
+   if(query.hasOwnProperty('completed') && query.completed === 'true')
+      where.completed = true;
+   else if(query.hasOwnProperty('completed') && query.completed === 'false')
+      where.completed = false;
+   if(query.hasOwnProperty('q') && query.q.length > 0){
+
+      where.description = {
+
+          $like : '%' + query.q + '%'
+
+      }
+
+
    }
-   
-   else if(queryParams.hasOwnProperty('completed') && queryParams.completed == 'false'){
-       
-       filteredTodos = _.where(filteredTodos, {completed:false}); //multiple results
-       
-   }
-   
-   
-   if(queryParams.hasOwnProperty('q') && queryParams.q.length > 0){
-       //filter: Looks through each value in the list, returning an array of all the values that pass a truth test (predicate).
-       filteredTodos = _.filter(filteredTodos, function(todo){ //array, individual item
-           
-            return todo.description.toLowerCase().indexOf(queryParams.q.toLowerCase()) > -1; //if string q is not on string , returns -1
-            //if true, add to result array and return it 
-       });
-       
-       
-   }
-   
-   //now we can call : /todos?completed=true or /todos?completed=false :DD
-    
-   response.json(filteredTodos); 
+
+   db.todo.findAll({where: where}).then(function(todos){
+      response.json(todos);
+   }, function(error){
+      response.status(500).send('Internal server error');
+   });
     
 });
 
@@ -104,26 +96,6 @@ app.get('/todos/:id', function(request,response){
     );
 
 
-    //var matchedTodo = _.findWhere(todos, {id:todoId});//find where => 1 result (linq)
-    /*todos.forEach(function(element) {
-        
-        if(element.id==todoId){ // === checks Type!
-            
-            console.log('found a match!');
-            match = true;
-            response.json(element);
-            
-        } 
-    }); 'NORMAL IMPLEMENTATION' 
-    
-   if(!match) {
-       console.log('404 Not found!');
-       response.status(404).send();
-   }
-   
-   */
-   //if(matchedTodo) response.json(matchedTodo);
-   //else response.status(404).send();
     
     
 });
@@ -143,29 +115,7 @@ app.post('/todos', function(request,response){ //body parser npm needed
     });
 
 
-    // if(!_.isBoolean(body.completed) || !_.isString(body.description) || body.description.trim().length === 0){
-        
-    //     return response.status(400).send('Format Problem, check'); //request cannot be completed
-        
-    // }
-    
-    // body.description = body.description.trim(); //discard additional spaces(beginning , end)
-    
-
-    //IMPLEMENTATION USING ARRAYS (LOCAL//STATIC)
-    
-    // console.log('description: ' + body.description);
-    // /*todos.push({
-        
-    //     id : todoNextId,
-    //     description : body.description,
-    //     completed : body.completed
-        
-    // });*/
-    // body.id = todoNextId;
-    // todos.push(body);
-    // todoNextId += 1;
-    // response.json(body); //send the same data back
+  
     
 });
 
