@@ -1,10 +1,16 @@
 
 myApp.controller('mainController', function($scope,$http,$routeParams,$location){
-
+	var apiUrl;
 	var url = $location.absUrl();
 	console.log(url);
 
-	$http.get("http://localhost:3000/todos").success(function(response, error){
+
+	if(url.indexOf('localhost')> -1) apiUrl = "http://localhost:3000/";
+	else apiUrl = "http://hajnal-todo-api.herokuapp.com/";
+
+
+	
+	$http.get(apiUrl+"todos").success(function(response, error){
         
        	$scope.todos = response;
                         
