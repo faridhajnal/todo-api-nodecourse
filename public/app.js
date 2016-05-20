@@ -1,7 +1,9 @@
 var myApp = angular.module('myApp',['ngRoute']); //note no dashes for services
 
-myApp.constant('localHostUrl', 'http://localhost:3000')
-     .constant('herokuUrl', 'http://hajnal-todo-api.herokuapp.com/');	
+myApp.constant('localHostUrl', 'http://localhost:3000/')
+     .constant('herokuUrl', 'http://hajnal-todo-api.herokuapp.com/');
+
+
 myApp.config(function($routeProvider){
 
 	$routeProvider

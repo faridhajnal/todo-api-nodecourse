@@ -1,15 +1,14 @@
 
-myApp.controller('mainController', function($scope,$http,$routeParams,$location){
+myApp.controller('mainController', function($scope,$http,$routeParams,$location,localHostUrl,herokuUrl){
 	var apiUrl;
 	var url = $location.absUrl();
 	console.log(url);
 
 
-	if(url.indexOf('localhost')> -1) apiUrl = "http://localhost:3000/";
-	else apiUrl = "http://hajnal-todo-api.herokuapp.com/";
+	if(url.indexOf('localhost')> -1) apiUrl = localHostUrl;
+	else apiUrl = herokuUrl;
 
 
-	
 	$http.get(apiUrl+"todos").success(function(response, error){
         
        	$scope.todos = response;
