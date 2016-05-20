@@ -1,0 +1,15 @@
+<h2> here u can find more info about ur todo with id: {{todo.id}} </h2>
+
+<a href="#"> Click to go back </a>
+
+
+<div class="panel panel-default">
+  <div class="panel-heading">TODO: {{todo.description}}</div>
+  <div class="panel-body">
+    Completed = <span id="createdTodo">{{ transformBoolean(todo.completed) }} </span><br/>
+    CreatedAt = {{todo.createdAt | date: "dd.MM.y (HH:mm)" }}  <br/>
+    Last Update = {{todo.updatedAt | date: "dd.MM.y (HH:mm)"}}	
+  </div>
+</div>
+
+

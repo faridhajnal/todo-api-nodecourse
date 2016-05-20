@@ -38,12 +38,7 @@ var todoNextId = 1;
 
 app.use(bodyparser.json());
 
-app.get('/', function(req,res){
-    
-    
-    res.send('ToDo API root');
-    
-});
+
 
 ///GET ALLE
 app.get('/todos', function(request,response){
@@ -195,6 +190,8 @@ app.put('/todos/:id', function(request,response){
 
 
 });
+
+app.use(express.static(__dirname + '/public'));
     
     
 
