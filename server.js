@@ -62,6 +62,8 @@ app.get('/todos', function(request,response){
    }
 
    db.todo.findAll({where: where}).then(function(todos){
+      var count = Object.keys(todos).length;
+      console.log("COUNT " + count);
       response.json(todos);
    }, function(error){
       response.status(500).send('Internal server error');
