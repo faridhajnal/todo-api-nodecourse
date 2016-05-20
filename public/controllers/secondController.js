@@ -1,10 +1,19 @@
-myApp.controller('secondController', function($scope,$http,$routeParams){
+myApp.controller('secondController', function($scope,$http,$routeParams,$location,localHostUrl,herokuUrl){
+
+    var apiUrl;
+    var url = $location.absUrl();
+    console.log(url);
+
+
+    if(url.indexOf('localhost')> -1) apiUrl = localHostUrl;
+    else apiUrl = herokuUrl;
+
 
 
 	var id = $routeParams.id;
 	//console.log('ID: ' +id);
 
-	$http.get("http://localhost:3000/todos/"+id).success(function(response, error){
+	$http.get(apiUrl +"todos/"+id).success(function(response, error){
         if(error===200){
        	$scope.todo = response;}
 
