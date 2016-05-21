@@ -121,22 +121,27 @@ app.post('/todos', function(request,response){ //body parser npm needed
 app.delete('/todos/:id', function(request,response){
     
     var todoId = parseInt(request.params.id, 10);
-    //var tododes = request.params.status;
-    //var matchedTodo = _.findWhere(todos, {description:tododes});
-    var matchedTodo = _.findWhere(todos, {id:todoId}); 
-    if(!matchedTodo){
-        response.status(404).json({"error":"no todo matches the id"});
-        
-        
-    }
-     
-   else {
-       
-       todos = _.without(todos, matchedTodo); //first param array to remove from, second element to remove
-       response.json(matchedTodo);
-       
-   }
     
+    db.todo.destroy({
+      where: {
+        id:todoId
+      }
+    }).then(function(numberOfRows){
+      //success callback returns number of rows deleted succesfully
+      if(numberOfRows === 0){
+        response.status(404).send('ID not found');
+      }
+      else{
+        response.status(204).send(); //204 everything OK, no data to being send back.
+      }
+
+
+
+    },function(){
+
+      response.status(500).send('Something went wrong on our side');
+
+    });
     
     
 });
