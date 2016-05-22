@@ -37,7 +37,7 @@ app.get('/todos', function(request,response){
 
    }
 
-   db.todo.findAll({where: where}).then(function(todos){ //success callback. where stores an object with the key value pairs
+   db.todo.findAll({where: where, order: '"id" DESC'}).then(function(todos){ //success callback. where stores an object with the key value pairs
       var count = Object.keys(todos).length;
       console.log("COUNT " + count); //extra, method to count number of results returned by query
 
