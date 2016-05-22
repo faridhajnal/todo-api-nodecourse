@@ -132,49 +132,59 @@ app.delete('/todos/:id', function(request,response){
 
 app.put('/todos/:id', function(request,response){ 
     var todoId = parseInt(request.params.id, 10);
-    var matchedTodo = _.findWhere(todos, {id:todoId}); 
     
-    if(!matchedTodo) return response.status(404).send('id is not valid');
     
     var body = _.pick(request.body, 'description', 'completed');//only valid fields for json
-    var validAttributes = {}; //empty json object
+    var attributes = {}; //empty json object
    
     
     if(body.hasOwnProperty('completed') && _.isBoolean(body.completed)){
         
-        validAttributes.completed = body.completed;
+        attributes.completed = body.completed;
         
     } //boolean method has own property and corresponds to type
     
-    else if(body.hasOwnProperty('completed')){ //is not boolean (implicit)
+    if(body.hasOwnProperty('description')){
         
-        return response.status(400).send('value completed must be boolean');
-        
-    }
-    
-    //else, nothing will happen, no problem...
-    
-    if(body.hasOwnProperty('description') && _.isString(body.description) && body.description.trim().length>0){
-        
-        validAttributes.description = body.description;
+        attributes.description = body.description;
         
     } //boolean method has own property and corresponds to type
-    
-    else if(body.hasOwnProperty('description')){ //is not boolean (implicit)
-        
-        return response.status(400).send('value for description is not string');
-        
-    }
-   
-    
-    //same for this on the else 
-    
-    
-    //now we can update
-    
-    _.extend(matchedTodo, validAttributes); //this method overrides the exisiting properties and modifies the one needed, it then returns an object
-    response.json(matchedTodo);                                                    //first argument is 'original' object and second is the one with the overrides ((id remains equal))
-    //matchedTodo was modified on the extend method, without need of assigning explicitly to update in code. ((using as void))                                                    
+
+    //instance method executed on an already fetched model
+
+    db.todo.findById(todoId).then(function(todo){
+
+        if(todo){
+
+            return todo.update(attributes);
+
+        }
+
+        else{
+
+
+          response.status(404).send();
+
+        }
+
+
+    }, function(){ //error...
+
+
+      response.status(500).send('InternalError');
+    //followup to todo.update...
+    }).then(function(todo){ //todo with updated attributes
+
+
+      response.json(todo.toJSON());
+
+
+    }, function(error){
+
+      response.status(400).json(error);//invalid syntax
+
+    });
+
 
 
 });
