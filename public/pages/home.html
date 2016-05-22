@@ -1,10 +1,19 @@
-<h4> {{message}} </h4>
-
-<div class="btn-group" style="margin-bottom:15px;">
-    <button class="btn btn-success" ng-click="filterOnlyIncomplete()" ng-hide="todoFilter">Show only non completed</button>
-  	<!--<button class="btn btn-success" ng-click="changeFilter()" ng-show="todoFilter">Show ALL</button>!-->
-
+<div class="alert alert-info" ng-show="todocount>5">
+	<a class="close" data-dismiss="alert" aria-label="close">&times;</a>
+    <strong>Attention:</strong>You got {{counter}} non completed activities
 </div>
+
+
+<h4> {{message}} </h4> 
+
+	<div style="margin-bottom:10px">
+	<input type="button" class="btn btn-danger" value="Add ToDo" ng-click="createTodo()"/>
+
+
+    <button class="btn btn-success" style="float:right" ng-click="filterOnlyIncomplete()" ng-hide="todoFilter">Show only non completed</button>
+  	<!--<button class="btn btn-success" ng-click="changeFilter()" ng-show="todoFilter">Show ALL</button>!-->
+  	</div>
+
 
 <div class="list-group" ng-repeat="todo in todos">
 

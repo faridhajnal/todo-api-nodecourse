@@ -15,12 +15,19 @@ myApp.config(function($routeProvider){
 
 	})
 
+	.when('/createTodo', {
+
+		templateUrl: 'pages/createTodo.html',
+        controller: 'createTodoController'
+
+	})	
+
 	.when('/todo/:id', {
 
 		templateUrl: 'pages/second.html',
         controller: 'secondController'
 
-	})
+	})	
 
 
 

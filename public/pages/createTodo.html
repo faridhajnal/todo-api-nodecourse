@@ -1,0 +1,8 @@
+<form class="form-signin">
+        <h2 class="form-signin-heading">Insert Todo Info</h2>
+        
+        <input type="text" id="todoDescription" ng-model="description" class="form-control" placeholder="Description" required autofocus>
+        <hr/>
+        <h4> Character Count: <b>{{description.length}}</b> </h4>
+        <button class="btn btn-primary" ng-disabled="!description" ng-click="sendNewTodo()">Send</button>
+</form>

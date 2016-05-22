@@ -16,6 +16,24 @@ myApp.controller('mainController', function($scope,$http,$routeParams,$location,
 		$http.get(apiUrl+"todos").success(function(response, error){
 	        
 	       	$scope.todos = response;
+	       	var todos= response;
+	       	var counter = 0;
+	       	todos.forEach(function(todo){
+
+	       		if(todo.completed===false) counter++;
+
+
+	       	});
+
+	       	$scope.counter = counter;
+
+
+
+	       	console.log('COUNTER '+ counter);
+
+
+	        $scope.todocount = Object.keys($scope.todos).length;
+      		//console.log("COUNT " + count); //extra, method to count number of results returned by query
 	                        
 	    });
 	}
@@ -36,6 +54,14 @@ myApp.controller('mainController', function($scope,$http,$routeParams,$location,
 	$scope.markAsCompleted = function(todoId){
 
 		console.log('Mark as Completed ID: ' + todoId);
+
+
+	}
+
+
+	$scope.createTodo = function(){
+
+		$location.path('/createTodo');
 
 
 	}
