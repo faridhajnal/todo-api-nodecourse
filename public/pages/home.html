@@ -1,4 +1,4 @@
-<div class="alert alert-info" ng-show="todocount>5">
+<div class="alert alert-info" ng-show="todocount>0">
 	<a class="close" data-dismiss="alert" aria-label="close">&times;</a>
     <strong>Attention:</strong>You got {{counter}} non completed activities
 </div>
@@ -24,7 +24,7 @@
     <br/>
     <input type="button" class="btn-primary" style="margin-top:10px;" value="Mark as completed" ng-hide="todo.completed" ng-click="markAsCompleted(todo.id)"/>
     <br/>
-    <input type='button' class='btn-danger' style="margin-top:10px;color:blue;" value = "Delete Todo"/>
+    
 
 
 

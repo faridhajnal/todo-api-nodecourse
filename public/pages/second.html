@@ -8,9 +8,16 @@
   <div class="panel-body">
     Completed = <span id="createdTodo">{{ transformBoolean(todo.completed) }} </span><br/>
     CreatedAt = {{todo.createdAt | date: "dd.MM.y (HH:mm)" }}  <br/>
-    Last Update = {{todo.updatedAt | date: "dd.MM.y (HH:mm)"}}	
+    Last Update = {{todo.updatedAt | date: "dd.MM.y (HH:mm)"}}
+    <hr/>
+    <input type="button" class="btn btn-danger" value="Delete This ToDo" confirmed-click="deleteTodo(todo.id)" 
+    ng-confirm-click="Really nigg?"/>	
   </div>
   
 </div>
 
+<div class="alert alert-info" ng-show="confirmMessage">
+	
+    <strong>{{confirmMessage}}</strong>
+</div>
 

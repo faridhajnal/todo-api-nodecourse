@@ -6,3 +6,9 @@
         <h4> Character Count: <b>{{description.length}}</b> </h4>
         <button class="btn btn-primary" ng-disabled="!description" ng-click="sendNewTodo()">Send</button>
 </form>
+
+
+<div class="alert alert-info" ng-show="confirmMessage">
+	
+    <strong>{{confirmMessage}}</strong>
+</div>

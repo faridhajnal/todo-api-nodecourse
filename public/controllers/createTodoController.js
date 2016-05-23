@@ -1,6 +1,7 @@
-myApp.controller('createTodoController', ['$scope', '$http', '$location', function(scope,http,location){
+myApp.controller('createTodoController', ['$scope', '$http', '$location', '$timeout', function(scope,http,location,timeout){
 
-	
+	scope.confirmMessage="";
+
 
 	scope.sendNewTodo = function(){
 
@@ -16,9 +17,17 @@ myApp.controller('createTodoController', ['$scope', '$http', '$location', functi
 
 		http.post('http://localhost:3000/todos', newTodo).success(function(response,error){
 			if(error===200){
+				scope.confirmMessage = "Todo Added to  DB";
 
-				alert('ToDo agregado satisfactoriamente :D');
-				location.path('/');
+
+				timeout(function () {
+				
+					location.path('/');
+                
+            	}, 4000);
+
+				
+				
 
 
 			}
