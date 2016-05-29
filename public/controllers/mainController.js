@@ -53,10 +53,33 @@ myApp.controller('mainController', function($scope,$http,$routeParams,$location,
 
 	$scope.markAsCompleted = function(todoId){
 
-		console.log('Mark as Completed ID: ' + todoId);
+		
+		$http.put(apiUrl+"todos/"+todoId, {"completed":true}).success(function(response, error){
+        
+        console.log('correctly updated todo id# ' + todoId);
+       	
+        $http.get(apiUrl+"todos").success(function(response, error){
+	        
+	       	$scope.todos = response;
+	       	var todos= response;
+	       	var counter = 0;
+	       	todos.forEach(function(todo){
 
+	       		if(todo.completed===false) counter++;
+
+
+	       	});
+
+	       	$scope.counter = counter;
+
+	       });
+
+                       
+    	});
 
 	}
+
+
 
 
 	$scope.createTodo = function(){

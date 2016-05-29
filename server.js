@@ -189,6 +189,30 @@ app.put('/todos/:id', function(request,response){
 
 });
 
+
+app.post('/users', function(request,response){ //body parser npm needed
+    
+    var body = _.pick(request.body, 'email', 'password'); //pick from body only description and completed keys; ignore other key value pairs trying to be sent via HTTP to server
+    
+    db.user.create(body).then(function(userObject){ //success callback
+
+        response.json(userObject.toJSON());//return what you just posted (not necessary)
+
+    }, function(error){
+
+       response.status(400).json(error);//send back the error.
+
+    });
+
+
+  
+    
+});
+
+
+
+
+
 app.use(express.static(__dirname + '/public')); //client side running on express server (Port PORT)
     
     

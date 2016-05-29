@@ -31,8 +31,9 @@ else{
 
 var db = {}; //attach various properties to be able to export multiple things
 
-db.todo = sequelize.import(__dirname + '/models/todo.js') //lets load sequelize moduels from separate files
+db.todo = sequelize.import(__dirname + '/models/todo.js'); //lets load sequelize moduels from separate files
 														  //external file needs to follow certain format.
+db.user = sequelize.import(__dirname + '/models/user.js');
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 module.exports = db;
