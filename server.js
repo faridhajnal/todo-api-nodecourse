@@ -196,7 +196,7 @@ app.post('/users', function(request,response){ //body parser npm needed
     
     db.user.create(body).then(function(userObject){ //success callback
 
-        response.json(userObject.toJSON());//return what you just posted (not necessary)
+        response.json(userObject.toPublicJSON());//return what you just posted (not necessary)
 
     }, function(error){
 
@@ -216,7 +216,7 @@ app.post('/users', function(request,response){ //body parser npm needed
 app.use(express.static(__dirname + '/public')); //client side running on express server (Port PORT)
     
     
-
+//{force:true} when we want to whype db
 db.sequelize.sync().then(function(){//When database is ready, kick off app
 
     app.listen(PORT, function(){ //callback function

@@ -1,3 +1,7 @@
+var bcrypt = require('bcryptjs');
+var _ = require('underscore');
+
+
 module.exports = function(sequelize, DataTypes){
 
 	//FILE FORMAT FOR SEQUELIZE IMPORT
@@ -16,13 +20,34 @@ module.exports = function(sequelize, DataTypes){
 
 		},
 
+		salt:{
+			type:DataTypes.STRING //adding characters at end of password so that hash is not the same
+		},
+
+		password_hash:{
+			type:DataTypes.STRING //hash the given string
+		},
+
+
+
 		password : {
 
-			type: DataTypes.STRING,
+			type: DataTypes.VIRTUAL, //Not stored on DB, but accessible
 			allowNull : false,
 			validate : {
 
 				len: [7, 40]
+
+			},
+
+			set:function(value){
+				//value is password, overwriting fucntion SET
+				var salt = bcrypt.genSaltSync(10);
+				var hashedPass = bcrypt.hashSync(value,salt);
+
+				this.setDataValue('password', value);
+				this.setDataValue('salt',salt); //salt stored in DB
+				this.setDataValue('password_hash', hashedPass);
 
 			}
 
@@ -30,9 +55,9 @@ module.exports = function(sequelize, DataTypes){
 
 	},
 
-		{ hooks: 
+		{ 
 
-			{
+		hooks: {
 
 			beforeValidate : function(user, options){
 
@@ -45,9 +70,25 @@ module.exports = function(sequelize, DataTypes){
 
 			}
 
+		},
+
+			instanceMethods: {
+
+				toPublicJSON: function(){
+					//will only return public properties
+
+					var json = this.toJSON();
+					return _.pick(json, 'id', 'email', 'createdAt', 'updatedAt');
+					//elements to 'pick'
+				}
+			}
 
 
-		}
+		//}
+
+
+
+		
 
 	});
 
