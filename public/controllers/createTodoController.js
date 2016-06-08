@@ -2,7 +2,7 @@ myApp.controller('createTodoController', ['$scope', '$http', '$location', '$time
 'localHostUrl','herokuUrl', function(scope,http,location,timeout,localHostUrl,herokuUrl){
 
 	scope.confirmMessage="";
-
+	var url = location.absUrl();
 
 	scope.sendNewTodo = function(){
 	if(url.indexOf('localhost')> -1) apiUrl = localHostUrl;
