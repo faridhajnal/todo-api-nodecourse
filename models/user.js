@@ -5,7 +5,7 @@ var _ = require('underscore');
 module.exports = function(sequelize, DataTypes){
 
 	//FILE FORMAT FOR SEQUELIZE IMPORT
-	return sequelize.define('user', { //name of the model
+	var user = sequelize.define('user', { //name of the model
 		//fields for the model
 		email : {
 
@@ -57,20 +57,65 @@ module.exports = function(sequelize, DataTypes){
 
 		{ 
 
-		hooks: {
+			hooks: {
 
-			beforeValidate : function(user, options){
+				beforeValidate : function(user, options){
 
-				if(typeof user.email === 'string'){
+					if(typeof user.email === 'string'){
 
-					user.email = user.email.toLowerCase();
+						user.email = user.email.toLowerCase();
 
+
+					}
 
 				}
 
-			}
+			},
 
-		},
+
+			classMethods: {
+
+				authenticate : function(body){
+					 return new Promise(function(resolve,reject){
+
+					 	  if(typeof body.email !== 'string' || typeof body.password !== 'string'){
+
+					 	  		return reject();
+						  }
+
+
+						  user.findOne({
+						    where:{
+						      email : body.email
+						    }
+						  }).then(function(user){
+
+						    if(!user || !bcrypt.compareSync(body.password, user.get('password_hash'))){
+
+						      	return reject(); //catched by second callback
+
+
+						    }
+
+						    else{
+
+						      resolve(user); //firts callback on server.js HTTPReqest
+
+						    }
+
+						  }, function(error){
+
+						      reject();
+
+						  });
+
+
+
+
+					 });
+				}
+
+			},
 
 			instanceMethods: {
 
@@ -91,5 +136,8 @@ module.exports = function(sequelize, DataTypes){
 		
 
 	});
+
+
+	return user;
 
 };

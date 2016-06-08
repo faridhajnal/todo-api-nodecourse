@@ -2,7 +2,7 @@ var express = require('express'); // npm modules
 var bodyparser = require('body-parser');
 var _ = require('underscore'); //similar to linq on C#
 var db = require('./db.js');//local file, describing the database and with db object
-
+var bcrypt = require('bcryptjs');
 
 var app = express(); //start express
 var PORT = process.env.PORT || 3000; //environment variable from heroku
@@ -210,6 +210,28 @@ app.post('/users', function(request,response){ //body parser npm needed
 });
 
 
+app.post('/users/login', function(request,response){
+
+  var body = _.pick(request.body, 'email', 'password');
+
+
+  //implementing class method for calling it from here...
+
+
+  db.user.authenticate(body).then(function(user){
+
+      response.json(user.toPublicJSON());//send back user
+
+  }, function(){ //error callback
+
+      response.status(401).send('bad credentials'); //dont care about error itself, and it could provide security issues
+
+  });
+
+
+});
+
+
 
 
 
@@ -217,7 +239,7 @@ app.use(express.static(__dirname + '/public')); //client side running on express
     
     
 //{force:true} when we want to whype db
-db.sequelize.sync().then(function(){//When database is ready, kick off app
+db.sequelize.sync({force:true}).then(function(){//When database is ready, kick off app
 
     app.listen(PORT, function(){ //callback function
         

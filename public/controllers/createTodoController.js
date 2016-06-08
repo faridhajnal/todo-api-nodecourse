@@ -1,10 +1,12 @@
-myApp.controller('createTodoController', ['$scope', '$http', '$location', '$timeout', function(scope,http,location,timeout){
+myApp.controller('createTodoController', ['$scope', '$http', '$location', '$timeout',
+'localHostUrl','herokuUrl', function(scope,http,location,timeout,localHostUrl,herokuUrl){
 
 	scope.confirmMessage="";
 
 
 	scope.sendNewTodo = function(){
-
+	if(url.indexOf('localhost')> -1) apiUrl = localHostUrl;
+	else apiUrl = herokuUrl;
 
 		//console.log('Hello man');
 		var newTodo = {
@@ -15,7 +17,7 @@ myApp.controller('createTodoController', ['$scope', '$http', '$location', '$time
 
 		}
 
-		http.post('http://localhost:3000/todos', newTodo).success(function(response,error){
+		http.post(apiUrl + "todos", newTodo).success(function(response,error){
 			if(error===200){
 				scope.confirmMessage = "Todo Added to  DB";
 
