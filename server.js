@@ -220,10 +220,11 @@ app.post('/users/login', function(request,response){
 
   db.user.authenticate(body).then(function(user){
 
-      response.json(user.toPublicJSON());//send back user
+      response.header('Auth', user.generateToken('authenticate'))
+      .json(user.toPublicJSON());//send back user
 
-  }, function(){ //error callback
-
+  }, function(error){ //error callback
+      console.log(error);
       response.status(401).send('bad credentials'); //dont care about error itself, and it could provide security issues
 
   });
@@ -239,7 +240,7 @@ app.use(express.static(__dirname + '/public')); //client side running on express
     
     
 //{force:true} when we want to whype db
-db.sequelize.sync({force:true}).then(function(){//When database is ready, kick off app
+db.sequelize.sync().then(function(){//When database is ready, kick off app
 
     app.listen(PORT, function(){ //callback function
         
