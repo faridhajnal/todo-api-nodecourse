@@ -7,6 +7,7 @@ module.exports = function(sequelize, DataTypes){
 
 			type: DataTypes.STRING,
 			allowNull : false, //self explanatory <<defaults to true??>>
+			unique: true,
 			validate : {
 
 				len:[1,250] //minimum, maximum length of string for description

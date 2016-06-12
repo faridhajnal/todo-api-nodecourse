@@ -115,6 +115,42 @@ module.exports = function(sequelize, DataTypes){
 
 
 					 });
+				},
+
+				findByToken : function(token){
+
+					return new Promise(function(resolve,reject){
+
+						try{
+
+							var decodedJWT = jsonwebtoken.verify(token,'dhsdjsha1212');
+							var bytes = cryptojs.AES.decrypt(decodedJWT.token, 'abc123!#$#1def');
+							var tokenData = JSON.parse(bytes.toString(cryptojs.enc.Utf8));
+							//here is the original data
+
+							user.findById(tokenData.id).then(function(user){
+
+								if(user) resolve(user);
+								else reject();
+
+							}, function(error){
+
+								reject(error);
+
+							});
+
+						}
+
+						catch(exception){
+
+							reject(exception);
+
+						}
+
+
+					});
+
+
 				}
 
 			},

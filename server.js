@@ -3,6 +3,9 @@ var bodyparser = require('body-parser');
 var _ = require('underscore'); //similar to linq on C#
 var db = require('./db.js');//local file, describing the database and with db object
 var bcrypt = require('bcryptjs');
+var middleware = require('./middleware.js')(db); //self made middle, it is
+//a function so we can require it with argument
+
 
 var app = express(); //start express
 var PORT = process.env.PORT || 3000; //environment variable from heroku
@@ -12,7 +15,7 @@ app.use(bodyparser.json());
 
 
 ///GET ALLE
-app.get('/todos', function(request,response){
+app.get('/todos', middleware.requireAuthentication, function(request,response){
     
     
    var query = request.query; //Request objects for HTTP requests have query parameter everytime
@@ -51,7 +54,7 @@ app.get('/todos', function(request,response){
 
 //GET BY ID
 
-app.get('/todos/:id', function(request,response){ //:id comes as dynamic parameter
+app.get('/todos/:id', middleware.requireAuthentication, function(request,response){ //:id comes as dynamic parameter
     
     var todoId = parseInt(request.params.id, 10);//base 10
     
@@ -78,7 +81,7 @@ app.get('/todos/:id', function(request,response){ //:id comes as dynamic paramet
 
 //POST
 
-app.post('/todos', function(request,response){ //body parser npm needed
+app.post('/todos', middleware.requireAuthentication, function(request,response){ //body parser npm needed
     
     var body = _.pick(request.body, 'description', 'completed'); //pick from body only description and completed keys; ignore other key value pairs trying to be sent via HTTP to server
     
@@ -99,7 +102,7 @@ app.post('/todos', function(request,response){ //body parser npm needed
 
 //DELETE
 
-app.delete('/todos/:id', function(request,response){
+app.delete('/todos/:id', middleware.requireAuthentication, function(request,response){
     
     var todoId = parseInt(request.params.id, 10);
     
@@ -130,7 +133,7 @@ app.delete('/todos/:id', function(request,response){
 
 //UPDATE ((PUT))
 
-app.put('/todos/:id', function(request,response){ 
+app.put('/todos/:id', middleware.requireAuthentication, function(request,response){ 
     var todoId = parseInt(request.params.id, 10);
     
     
