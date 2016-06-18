@@ -19,7 +19,9 @@ app.get('/todos', middleware.requireAuthentication, function(request,response){
     
     
    var query = request.query; //Request objects for HTTP requests have query parameter everytime
-   var where = {};//object for storing 'fitering' specifications
+   var where = {
+   		userId:request.user.get('id')
+   };//object for storing 'fitering' specifications
 
    if(query.hasOwnProperty('completed') && query.completed === 'true')
       //if parameter is in the query and check for its value
@@ -60,7 +62,12 @@ app.get('/todos/:id', middleware.requireAuthentication, function(request,respons
     
     console.log('Asking for todo with id: ' + todoId);
 
-    db.todo.findById(todoId).then(function(todoItem){//success callback
+    db.todo.findOne({
+    	where:{
+    		id : todoId,
+    		userId: request.user.get('id')
+    	}
+    }).then(function(todoItem){//success callback
 
           if(!!todoItem)  response.json(todoItem.toJSON());//for us to get all the info back
 
@@ -85,9 +92,19 @@ app.post('/todos', middleware.requireAuthentication, function(request,response){
     
     var body = _.pick(request.body, 'description', 'completed'); //pick from body only description and completed keys; ignore other key value pairs trying to be sent via HTTP to server
     
-    db.todo.create(body).then(function(todoItem){ //success callback
+    db.todo.create(body).then(function(todo){ //success callback
 
-        response.json(todoItem.toJSON());//return what you just posted (not necessary)
+    	request.user.addTodo(todo).then(function(){
+
+    		return todo.reload(); //updated version
+
+    	}).then(function(todo){
+    		//updated vserion of todo
+    		response.json(todo.toJSON());
+    	});
+
+
+        //response.json(todoItem.toJSON());//return what you just posted (not necessary)
 
     }, function(errorObject){
 
@@ -108,7 +125,9 @@ app.delete('/todos/:id', middleware.requireAuthentication, function(request,resp
     
     db.todo.destroy({
       where: {
-        id:todoId
+        id:todoId,
+        userId:request.user.get('id')
+
       }
     }).then(function(numberOfRows){
       //success callback returns number of rows deleted succesfully
@@ -155,7 +174,12 @@ app.put('/todos/:id', middleware.requireAuthentication, function(request,respons
 
     //instance method executed on an already fetched model
 
-    db.todo.findById(todoId).then(function(todo){
+    db.todo.findOne({
+    	where:{
+    		id : todoId,
+    		userId: request.user.get('id')
+    	}
+    }).then(function(todo){
 
         if(todo){
 

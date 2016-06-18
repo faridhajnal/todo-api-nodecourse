@@ -34,14 +34,54 @@ var Todo = sequelize.define('todo', {
 
 });
 
-sequelize.sync().then(function(){
+var User = sequelize.define('user', {
+	email : Sequelize.STRING
+});
+
+
+Todo.belongsTo(User);
+
+User.hasMany(Todo);
+
+sequelize.sync(/*{force:true}*/).then(function(){
 
 	console.log('everything is synced');
 
-	Todo.findById(13).then(function(todo){
+	User.findById(1).then(function(user){
+		user.getTodos({//sequelize provide method.
+			where:{
+				completed : false
+			}
+		}).then(function(todos){
+			todos.forEach(function (todo){
+				console.log(todo.toJSON());
+			});
+		});
+	});
+
+
+	// User.create({
+	// 	email:'fafas@mail.com'
+	// }).then(function(){
+	// 	return Todo.create({
+	// 		description:'some'
+	// 	});
+	// }).then(function(todo){
+	// 	User.findById(1).then(function(user){
+	// 		user.addTodo(todo);
+	// 	});
+	// })
+
+
+
+
+
+
+
+	/*Todo.findById(13).then(function(todo){
 		if(todo) console.log(todo.toJSON());
 		else console.log('Id not found');
-	});
+	});*/
 
 	// Todo.create({
 
