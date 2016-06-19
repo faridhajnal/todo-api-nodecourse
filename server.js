@@ -267,7 +267,7 @@ app.use(express.static(__dirname + '/public')); //client side running on express
     
     
 //{force:true} when we want to whype db
-db.sequelize.sync().then(function(){//When database is ready, kick off app
+db.sequelize.sync({force:true}).then(function(){//When database is ready, kick off app
 
     app.listen(PORT, function(){ //callback function
         
