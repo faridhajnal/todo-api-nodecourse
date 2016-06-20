@@ -241,20 +241,51 @@ app.post('/users/login', function(request,response){
 
   var body = _.pick(request.body, 'email', 'password');
 
+  var userInstance;
 
   //implementing class method for calling it from here...
 
 
   db.user.authenticate(body).then(function(user){
+  	  var token = user.generateToken('authenticate');
+  	  userInstance = user;
+  	  return db.token.create({
+  	  	token: token
+  	  });
 
-      response.header('Auth', user.generateToken('authenticate'))
-      .json(user.toPublicJSON());//send back user
 
-  }, function(error){ //error callback
+      //response.header('Auth', user.generateToken('authenticate'))
+      //.json(user.toPublicJSON());//send back user
+
+  }).then(function(tokenInstance){
+
+  	response.header('Auth', tokenInstance.get('token')).json(userInstance.toPublicJSON());
+
+  }).catch(function(error){ //error callback
       console.log(error);
       response.status(401).send('bad credentials'); //dont care about error itself, and it could provide security issues
 
   });
+
+
+});
+
+
+//DELETE /users/login
+
+app.delete('/users/login', middleware.requireAuthentication, function(request, response){
+
+
+	request.token.destroy().then(function(){
+
+		response.status(204).send();
+
+
+	}).catch(function(error){
+
+		response.status(500).send();
+
+	});
 
 
 });
@@ -267,7 +298,7 @@ app.use(express.static(__dirname + '/public')); //client side running on express
     
     
 //{force:true} when we want to whype db
-db.sequelize.sync({force:true}).then(function(){//When database is ready, kick off app
+db.sequelize.sync().then(function(){//When database is ready, kick off app
 
     app.listen(PORT, function(){ //callback function
         

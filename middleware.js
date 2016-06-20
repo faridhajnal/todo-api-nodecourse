@@ -1,3 +1,4 @@
+var cryptojs = require('crypto-js');
 module.exports = function(db){
 
 
@@ -7,17 +8,34 @@ module.exports = function(db){
 
 
 			//next will go to the actual todos route
-			var token = request.get('Auth'); //getting token
-			db.user.findByToken(token).then(function(user){
+			var token = request.get('Auth') || ''; //getting token
+
+			db.token.findOne({
+
+				where : {
+
+					tokenHash : cryptojs.MD5(token).toString()
+
+				}
+
+			}).then(function(tokenInstance){
+
+				if(!tokenInstance) throw new Error();
+
+				request.token = tokenInstance;
+				return db.user.findByToken(token);
+
+			}).then(function(user){
 
 				request.user = user;
-				next(); //magic.
+				next(); //continue with execution.
 
-			}, function(e){
+			}).
 
-				response.status(401).send('Internal Server Error');
+			catch(function(){
+				response.status(401).send();
+			});
 
-			});//custom class method.
 
 		}
 
